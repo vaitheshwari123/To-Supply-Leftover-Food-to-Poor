@@ -1,0 +1,774 @@
+var cpage = 1;
+$(function(){
+	
+	$('#reply_comment').submit(function(){
+		var Mentor_reply = $('#Mentor_reply').val();
+		if(Mentor_reply == ""){
+			$('#Mentor_reply').css('border','1px solid red');
+		}
+		else{
+			$.ajax({
+				url: base_url+"Mentor_API/reply_comment",
+				data: new FormData(this),
+				processData: false,
+				contentType: false,
+				type: 'POST',
+				success: function(data){
+					var data = $.parseJSON(data);
+					if(data.err == 1){
+						$('#Mentor_reply').val('');	
+						$('#commentID').val('');	
+						$('#Mentor_reply').css('border','');
+						$('#myModal2').modal('hide');
+						get_comments(cpage);
+						alertify.notify('Successfully your comment is sent');
+					}
+				}
+			})
+			
+		}
+		
+	})
+	
+	$('#mentor_review').change(function(){		
+		if($("#mentor_review").is(":checked")) { 
+			$('.in_others').hide();
+		} else { 
+			$('.in_others').show();
+		} 	
+	})
+	
+	$('#project_tasks').change(function(){		
+		if($("#project_tasks").is(":checked")) { 
+			$('.in_draggable').hide();
+		} else { 
+			$('.in_draggable').show();
+		} 	
+	})
+	
+	
+	$('#refresh_comment_section').click(function(){
+		get_comments(1);
+	})
+	get_comments(cpage);
+	$('#comment_form').submit(function(){
+		var Comment = $('#Comment').val();
+		if(Comment == ""){
+			$('#Comment').css('border','1px solid red');
+			alertify.notify("Please fill the Comment field");
+		}
+		else{
+			$('#Comment').css('border','');
+			$.ajax({
+				url: base_url+"Mentor_API/update_comment",
+				data: new FormData(this),
+				processData: false,
+				contentType: false,
+				type: 'POST',
+				success: function(data){
+					var data = $.parseJSON(data);
+					if(data.err == 1){
+						$('#ActivityID').val('');	
+						$('#Comment').val('');	
+						$('#Comment').css('border','');
+						$('#kanban_comment').modal('hide');
+						alertify.notify('Successfully your comment is sent to Mentor');
+					}
+				}
+			})
+		}
+	})
+	
+	
+	$(".draggable").draggable({ cursor: "crosshair", revert: "invalid"});
+	$(".backlog_drop").droppable({ accept: ".draggable", 
+	   drop: function(event, ui) {
+				console.log("drop");
+				$(this).removeClass("border").removeClass("over");
+				var dropped = ui.draggable;
+				var droppedOn = $(this);
+				$(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);      
+				
+				
+				var id = $(dropped).attr('id');
+				update_progress(0,id);
+				
+				
+			}, 
+			over: function(event, elem) {
+				$(this).addClass("over");
+				console.log("over");
+			},
+			out: function(event, elem) {
+				$(this).removeClass("over");
+			}
+	});
+	$(".inprogress_drop").droppable({ accept: ".draggable", 
+	   drop: function(event, ui) {
+				console.log("drop");
+				$(this).removeClass("border").removeClass("over");
+				var dropped = ui.draggable;
+				var droppedOn = $(this);
+				$(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);      
+				
+				
+				var id = $(dropped).attr('id');
+				update_progress(1,id);
+			}, 
+			over: function(event, elem) {
+				$(this).addClass("over");
+				console.log("over");
+			},
+			out: function(event, elem) {
+				$(this).removeClass("over");
+			}
+	});
+	$(".review_drop").droppable({ accept: ".draggable", 
+	   drop: function(event, ui) {
+				console.log("drop");
+				$(this).removeClass("border").removeClass("over");
+				var dropped = ui.draggable;
+				var droppedOn = $(this);
+				$(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);      
+				
+				
+				var id = $(dropped).attr('id');
+				update_progress(2,id);
+			}, 
+			over: function(event, elem) {
+				$(this).addClass("over");
+				console.log("over");
+			},
+			out: function(event, elem) {
+				$(this).removeClass("over");
+			}
+	});
+	$(".complete_drop").droppable({ 
+	   accept: ".draggable", 
+	   drop: function(event, ui) {
+				console.log("drop");
+				$(this).removeClass("border").removeClass("over");
+				var dropped = ui.draggable;
+				var droppedOn = $(this);
+				$(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);      
+				
+				
+				var id = $(dropped).attr('id');
+				update_progress(3,id);
+			}, 
+			over: function(event, elem) {
+				$(this).addClass("over");
+				console.log("over");
+			},
+			out: function(event, elem) {
+				$(this).removeClass("over");
+			}
+			
+	});
+		
+	display_projects_preivew(projectId_dynamic);
+	timeout();
+	$('#hide_btn').click(function(){
+		$('#hide_btn_div').fadeOut();
+	})
+	
+	$("#r_link").blur(function () {
+		var target = $(this).val();
+		 $('#preivew_cards').html('<p>Loading preview link ..</p>');
+		 
+		
+	  });
+	$('.treeview-colorful').mdbTreeview();
+	
+	$('#cancel_project_btn').click(function(){
+		$('#section_project').hide();
+		$('#projectId').val('');
+		$('.project_valids').each(function(){
+			$(this).css('border','');
+			$(this).val('');
+			
+		})
+		$('#cancel_project_btn').hide();	
+		$('#create_project_btn').show();	
+		$("#project_description").Editor("setText", description);
+	})
+	
+	
+	$('.tree_project').click(function(){
+		$('#project_creation_form').fadeIn();
+		$('#milestones_creation_form').hide();
+		$('#activity_creation_form').hide();
+		$('#refrence_creation_form').hide();
+	})
+	$('.tree_mile_stone').click(function(){
+		$('#activity_creation_form').hide();
+		$('#project_creation_form').hide();
+		$('#refrence_creation_form').hide();
+		$('#milestones_creation_form').fadeIn();
+	})
+	$('.tree_activities').click(function(){
+		$('#project_creation_form').hide();
+		$('#milestones_creation_form').hide();
+		$('#refrence_creation_form').hide();
+		$('#activity_creation_form').fadeIn();
+	})
+	
+	$('.tree_refrences').click(function(){
+		$('#project_creation_form').hide();
+		$('#milestones_creation_form').hide();
+		$('#activity_creation_form').hide();
+		$('#refrence_creation_form').fadeIn();
+	})
+	
+	$(".progress").each(function() {
+
+		var value = $(this).attr('data-value');
+		var left = $(this).find('.progress-left .progress-bar');
+		var right = $(this).find('.progress-right .progress-bar');
+
+		if (value > 0) {
+		  if (value <= 50) {
+			right.css('transform', 'rotate(' + percentageToDegrees(value) + 'deg)')
+		  } else {
+			right.css('transform', 'rotate(180deg)')
+			left.css('transform', 'rotate(' + percentageToDegrees(value - 50) + 'deg)')
+		  }
+		}
+
+	  })
+	  
+
+	$("body").on("click",'.pagination li',function(){
+        cpage = $(this).attr('page');
+		get_comments(cpage);
+    });
+	$('#CancelBtn').click(function(){
+		reset();
+	});
+	$('#SearchBtn').click(function(){
+		get_records(cpage);
+	});
+	$('#AddBtn').click(function(){
+		$('#myModal').modal('show');
+	});
+});
+
+function percentageToDegrees(percentage) {
+	return percentage / 100 * 360
+}
+
+function timeout(){
+	
+	var countDownDate = new Date(enddate+" 16:00:00").getTime();
+
+	
+	var x = setInterval(function() {
+
+	  
+	  var now = new Date().getTime();
+		
+	  var distance = countDownDate - now;
+		
+	  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+	  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+	  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+		
+	  
+	  document.getElementById("time_demo").innerHTML = days + " Days " + hours + ":"
+	  + minutes + ":" + seconds + "";
+	
+	  if (distance < 0) {
+		clearInterval(x);
+		document.getElementById("time_demo").innerHTML = "EXPIRED";
+	  }
+	}, 1000);
+	
+}
+
+
+function common_actions(){
+	$('.tree_project').click(function(){
+		$('#project_creation_form').fadeIn();
+		$('#milestones_creation_form').hide();
+		$('#activity_creation_form').hide();
+		$('#refrence_creation_form').hide();
+		scroll_top();	
+	})
+	$('.tree_mile_stone').click(function(){
+		$('#activity_creation_form').hide();
+		$('#project_creation_form').hide();
+		$('#refrence_creation_form').hide();
+		$('#milestones_creation_form').fadeIn();
+		scroll_top();	
+	})
+	$('.tree_activities').click(function(){
+		$('#project_creation_form').hide();
+		$('#milestones_creation_form').hide();
+		$('#refrence_creation_form').hide();
+		$('#activity_creation_form').fadeIn();
+		scroll_top();	
+	})
+	
+	$('.tree_refrences').click(function(){
+		$('#project_creation_form').hide();
+		$('#milestones_creation_form').hide();
+		$('#activity_creation_form').hide();
+		$('#refrence_creation_form').fadeIn();
+		$('#preview_cards_div').hide();
+		scroll_top();	
+	})
+}
+function scroll_top(){
+	/*$('html, body').animate({ scrollTop: 0 }, 'slow', function () {
+    });*/
+}
+
+function get_project_data(projectId){
+	$.ajax({
+		url : base_url+"Mentor_API/admin_get_project_data_bby_id",
+		type : "POST",
+		data : {'projectId': projectId},
+		success : function(data){
+		var data = $.parseJSON(data);
+		$('#projectTitle').html(data.projectTitle);
+		$('#complexity').html(data.complexity);
+		$('#category').html(data.category);
+		$('#skills').html(data.skills);
+		$('#project_description').html(data.project_description);
+		}
+	});	
+}
+
+
+function get_mile_stone_data(milestone_data, projectId){
+	$.ajax({
+		url : base_url+"Mentor_API/admin_get_mile_stone_data",
+		type : "POST",
+		data : {'milestone_data': milestone_data},
+		success : function(data){
+		var data = $.parseJSON(data);
+		$('#m_milestonetitle').html(data.milestonetitle);
+		$("#m_description").html(data.description);
+		}
+	});
+}
+
+function get_activity_details(actvityId){
+	$.ajax({
+			url : base_url+"Mentor_API/admin_get_activity_data",
+			type : "POST",
+			data : {'actvityId': actvityId},
+			success : function(data){
+			var data = $.parseJSON(data);
+			$('#a_activity_title').html(data.activity_title);
+			$('#a_duration').html(data.duration);
+			$('#a_months_weeks_days').html(data.months_weeks_days);
+			$('#a_tags').html(data.tags);
+			$("#a_description").html(data.description);
+			}
+		});
+}
+
+function get_refrences(referenceId){
+			
+	$.ajax({
+			url : base_url+"Mentor_API/admin_get_refrence_data",
+			type : "POST",
+			data : {'referenceId': referenceId},
+			success : function(data){
+			var data = $.parseJSON(data);	
+			var target = data.refrence_link;
+			$.ajax({
+			  url: "https://api.linkpreview.net",
+			  dataType: 'jsonp',
+			  data: {q: target, key: '5a2e292e7d25bb63a2d3b4c63524cd10abe39420dc68c'},
+			  success: function (response) {
+				  
+				var html = '';
+				html += '<div class="row">';
+				html += '<div class="col-md-4">	';
+				html += '<img src="'+response.image+'" class="preview_img">';
+				html += '</div>';
+				html += '<div class="col-md-8">';	
+				html += '<h3 class="preivew_title">'+response.description+'</h3>';	
+				html += '<p class="preivew_para">'+response.description+'</p>	';
+				html += '<a  class="preivew_link" href="'+response.url+'">';
+				html += ''+response.url+'</a>';
+				html += '</div>';
+
+				html += '</div>';
+									
+				$('#preivew_cards').html(html);
+				$('#preview_cards_div').show();
+			  }
+			});
+		
+		
+			}
+		});
+		//$('#preview_cards_div').hide();
+
+}
+
+function hide_delete(){
+	$('.common_delete_btn').each(function(){
+		$(this).hide();
+	})
+}
+function show_delete(){
+	$('.common_delete_btn').each(function(){
+		$(this).show();
+	})
+}
+
+function get_project_tree(last_id){
+	
+	$.ajax({
+		url : base_url+"Admin_Badges_API/get_project_view",
+		type : "POST",
+		data : {'projectId': last_id},
+		success : function(data){
+			
+			var data = $.parseJSON(data);
+			
+			if(data.err == 1){ //fruits.length
+				var data_details = data.project;
+				var project_details = data_details[0];
+				var projectTitle = project_details.projectTitle;
+				var projectId = project_details.projectId;
+				var html = '';
+				var milestones = data_details[1];
+				
+				html += '<div class="treeview-colorful w-20 border border-secondary mx-4 my-4">';
+				html += '<ul class="treeview-colorful-list mb-3">';
+				html += '<li class="treeview-colorful-items">';
+				html += '<a class="treeview-colorful-items-header">';
+				html += '<i class="fa fa-plus-circle"></i>';
+				html += ' <button class="btn tree_btn tree_project" onClick="get_project_data('+projectId+')">'+projectTitle+'</button>';
+				html += '</a>';		  
+							  
+				if(milestones.length != 0){
+					html += '<ul class="nested">';
+					$.each(milestones, function(i){
+						var miles = milestones[i];
+						var miels_1 = miles[0];
+						var miels_2 = miles[1];
+							
+						html += '<li class="treeview-colorful-items">';	
+						html += '<a class="treeview-colorful-items-header">';
+							html += '<i class="fa fa-plus-circle"></i>';	
+						html += ' <button class="btn  tree_btn tree_mile_stone" onClick="get_mile_stone_data('+miels_1.miilestoneId+','+projectId+')">'+miels_1.milestonetitle+'</span></button>';	
+							if(miels_2.length > 0){	
+								html += '<ul class="nested">';	
+								$.each(miels_2, function(i){
+									var act = miels_2[i];
+									var act_details = act[0];
+									var refrences = act[1];									
+									
+									html += '<li class="treeview-colorful-items">';
+									html += '<a class="treeview-colorful-items-header">';
+									html += '<i class="fa fa-plus-circle"></i>';
+									html += ' <button class="btn  tree_btn tree_activities" onClick="get_activity_details('+act_details.actvityId+')" >'+act_details.activity_title+' </button></a>';
+										if(refrences.length > 0){
+											html += '<ul class="nested">';	
+											$.each(refrences, function(i){
+												var reff = refrences[i];
+												
+												html += '<li>';
+												html += ' <button class="btn  tree_btn tree_refrences" onClick="get_refrences('+reff.referenceId+')" > '+reff.refrencetitle+'</button>';
+												html += '</li>';
+												
+											});	
+											html += '<li>';
+											html += ' <button class="btn  tree_btn tree_refrences create_tree_btn" onClick="create_refrences('+miels_1.miilestoneId+','+projectId+','+act_details.actvityId+' )" > <i class="fa fa-plus"></i>  Create References</button>';
+											html += '</li>';
+											html += '</ul>';		
+										}
+										else{
+											html += '<ul class="nested">';
+											html += '<li>';
+											html += ' <button class="btn  tree_btn tree_refrences create_tree_btn" onClick="create_refrences('+miels_1.miilestoneId+','+projectId+','+act_details.actvityId+' )"  > <i class="fa fa-plus"></i>  Create References</button>';
+											html += '</li>';
+											html += '</ul>';
+										}									
+									html += '</li>';
+									
+									
+								});
+								
+								html += '<li class="treeview-colorful-items">';
+								html += '<a class="treeview-colorful-items-header">';
+								html += '<button class="btn  tree_btn tree_activities create_tree_btn"  onClick="create_actiovities('+miels_1.miilestoneId+','+projectId+')" ><i class="fa fa-plus"></i>  Create Activity </button></a>';
+								html += '</li>';
+								
+								html += '</ul>';
+							}
+							else{
+								html += '<ul class="nested">';
+								html += '<li class="treeview-colorful-items">';
+								html += '<a class="treeview-colorful-items-header">';
+								html += '<button class="btn  tree_btn tree_activities create_tree_btn"  onClick="create_actiovities('+miels_1.miilestoneId+','+projectId+')"><i class="fa fa-plus"></i>  Create Activity </button></a>';
+								html += '</li>';
+								html += '</ul>';	
+							}
+						html += '</li>';	
+												
+					})	 
+
+					html += '<li class="treeview-colorful-items">';
+					html += '<a class="treeview-colorful-items-header">';
+					html += '<button class="btn tree_btn tree_mile_stone create_tree_btn" onClick="create_milestones('+projectId+')" ><i class="fa fa-plus"></i>  Create Milestone</span></button>';
+					html += '</li>';
+					html += '</ul>';					
+				}
+				else{
+					html += '<ul class="nested">';
+					html += '<li class="treeview-colorful-items">';
+					html += '<a class="treeview-colorful-items-header">';
+					html += '<button class="btn tree_btn tree_mile_stone create_tree_btn" onClick="create_milestones('+projectId+')" ><i class="fa fa-plus"></i>  Create Milestone</span></button>';
+					html += '</li>';
+					html += '</ul>';
+				}
+				
+				html += '</li>'; 
+				html += '</ul>';
+				html += '</div>';
+				
+				$('#tree_view_display').html(html);
+				
+				//$('.treeview-colorful').mdbTreeview();
+				$('#wrapper_id').scrollTop();
+				common_actions();
+			}
+			else{
+				alertify.notify('Something went wrong ..'); 
+			}
+		}
+	})	
+	show_delete();	
+}
+
+function display_projects_preivew(last_id){
+	
+	$.ajax({
+		url : base_url+"Mentor_API/get_project_view",
+		type : "POST",
+		data : {'projectId': last_id},
+		success : function(data){
+			
+			var data = $.parseJSON(data);
+			
+			if(data.err == 1){ 
+				var data_details = data.project;
+				var project_details = data_details[0];
+				var projectTitle = project_details.projectTitle;
+				var projectId = project_details.projectId;
+				var html = '';
+				var milestones = data_details[1];
+				
+				html += '<div class="treeview-colorful w-20 border border-secondary mx-4 my-4">';
+				html += '<ul class="treeview-colorful-list mb-3">';
+				html += '<li class="treeview-colorful-items">';
+				html += '<a class="treeview-colorful-items-header">';
+				html += '<i class="fa fa-plus-circle"></i>';
+				html += ' <button class="btn tree_btn tree_project" onClick="get_project_data('+projectId+')">'+projectTitle+'</button>';
+				html += '</a>';		  
+							  
+				if(milestones.length != 0){
+					html += '<ul class="nested">';
+					$.each(milestones, function(i){
+						var miles = milestones[i];
+						var miels_1 = miles[0];
+						var miels_2 = miles[1];
+							
+						html += '<li class="treeview-colorful-items">';	
+						html += '<a class="treeview-colorful-items-header">';
+						if(miels_2.length > 0){	
+							html += '<i class="fa fa-plus-circle"></i>';	
+						}
+						html += ' <button class="btn  tree_btn tree_mile_stone" onClick="get_mile_stone_data('+miels_1.miilestoneId+','+projectId+')">'+miels_1.milestonetitle+'</span></button>';	
+							if(miels_2.length > 0){	
+								html += '<ul class="nested">';	
+								$.each(miels_2, function(i){
+									var act = miels_2[i];
+									var act_details = act[0];
+									var refrences = act[1];									
+									
+									html += '<li class="treeview-colorful-items">';
+									html += '<a class="treeview-colorful-items-header">';
+									if(refrences.length > 0){
+										html += '<i class="fa fa-plus-circle"></i>';
+									}
+									html += ' <button class="btn  tree_btn tree_activities" onClick="get_activity_details('+act_details.actvityId+')" >'+act_details.activity_title+' </button></a>';
+										if(refrences.length > 0){
+											html += '<ul class="nested">';	
+											$.each(refrences, function(i){
+												var reff = refrences[i];
+												
+												html += '<li>';
+												html += ' <button class="btn  tree_btn tree_refrences" onClick="get_refrences('+reff.referenceId+')" > '+reff.refrencetitle+'</button>';
+												html += '</li>';
+												
+											});	
+											html += '<li>';
+											html += '</li>';
+											html += '</ul>';		
+										}									
+									html += '</li>';
+									
+									
+								});
+								
+							
+								html += '</ul>';
+							}
+						html += '</li>';	
+												
+					})	 
+
+					html += '</ul>';					
+				}
+				
+				html += '</li>'; 
+				html += '</ul>';
+				html += '</div>';
+				
+				$('#tree_view_display').html(html);
+				$('#section_project').show();
+				
+				$('.treeview-colorful').mdbTreeview();
+				common_actions();
+			}
+			else{
+				alertify.notify('Something went wrong ..'); 
+			}
+		}
+	})	
+	
+			
+	$('#project_creation_form').show();
+	$('#cancel_project_btn').show();	
+	get_project_data(last_id);	
+	
+	
+}
+
+
+
+function get_comments(page)
+{
+	var search = '';
+	$.ajax({
+		url : base_url+"Mentor_API/get_comments",
+		method : "POST",
+		data:{'Role':'records','skey':search,'page':page,'internshipID':internshipID},
+		success:function(data){
+			data = $.parseJSON(data);
+			var html='';
+			if(data.records!='')
+			{
+				var n = 1 ;
+				$.each(data.records, function(i){
+					var row = data.records[i];
+					html += '<tr>';
+					html += '<td>';
+					html +=  n++;
+					html += '.</td>';
+                    html += '<td>';
+                    if(row.firstname == null && row.lastname == null){
+                        html +=  'From Mentor';
+                    }
+                    else{
+                        html +=  row.firstname+' '+row.lastname;
+                    }
+					
+					html += '</td>';
+					html += '<td>';
+					html +=  row.Activity_name;
+					html += '</td>';
+					html += '<td>';
+					html +=  row.Comment;
+					html += '</td>';
+					html += '<td>';
+					if(row.Mentor_reply == ""){
+						html += '<a class="btn btn-primary btn-sm" onClick="make_reply('+row.commentID+')" >Reply</button>';
+					}
+					else{
+						html +=  row.Mentor_reply;
+					}
+					html += '</td>';
+					html += '<td>';
+					html +=  row.CreatedOn;
+					html += '</td>';
+					
+					html += '</tr>';
+				});
+			}
+			else
+				html+="<tr><td>No Results Found..</td></tr>";
+			
+			$('#show_data').html(html);
+			$('#pagination').html(data.pagination);
+		}
+	});
+}
+
+
+function update_progress(progress,id){
+	
+	if(progress == 0)
+		var percentage	 = 0
+	else if(progress == 1)
+		var percentage	 = 50
+	else if(progress == 2)
+		var percentage	 = 90
+	else if(progress == 3)
+		var percentage	 = 100	
+	else	
+		var percentage = $('#act_per_'+id).val();
+		
+	$('#act_per_'+id).val(percentage);
+	
+	$.ajax({
+		url: base_url+"Mentor_API/update_progress",
+		data: {'complete_percentage':percentage,'task_progress':progress,'assignID':id},
+		type: 'POST',
+		success: function(data){
+			var data = $.parseJSON(data);
+			if(data.err == 1){
+				alertify.notify('Your task is successfully moved');
+			}
+		}
+	})
+}
+
+function make_comment(activity_id){
+	$('#ActivityID').val(activity_id);
+	$('#kanban_comment').modal('show');
+}
+
+function make_reply(commentID){
+    alertify.alert('Access Denied','You required Approver permissions from your Admin to make a reply');
+	/* $('#commentID').val(commentID);
+	$('#myModal2').modal('show'); */
+}
+
+
+function common_defaults_function(){
+	$('#mentor_review').change(function(){		
+		if($("#mentor_review").is(":checked")) { 
+			$('.in_others').hide();
+		} else { 
+			$('.in_others').show();
+		} 	
+	})	
+	
+}
+
+
+
+
+
+
+

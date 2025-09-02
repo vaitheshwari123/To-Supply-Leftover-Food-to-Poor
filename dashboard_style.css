@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap');
+body {
+    font-family: 'Open Sans', sans-serif !important;
+}
+h1, h2, h3, h4, h5, h6, p, b, i, body, li, ul, lable, th, td, b, strong{
+    font-family: 'Open Sans', sans-serif !important;
+    color: #18265D  !important;
+}
+.skin-blue .sidebar-menu>li>a>span{
+    text-transform: capitalize;
+    font-weight: 600;
+    font-size: 13px;
+}
+.nav-icons .fa{
+    font-size: 23px !important;
+    margin-right: 10px;
+    color: #3f4d67a3 !important;
+}
+
+span.nav-icons {
+    display: inline-flex;
+    width: 37px;
+    text-align: center;
+    justify-content: center;
+}
+
+.sidebar-menu>li{
+    margin: 8px 0px;
+}
+.fa{
+    font: normal normal normal 14px/1 FontAwesome !important;
+}
+.skin-blue .main-header .navbar{
+    background-color: #ffffff !important;
+}
+.skin-blue .main-header .logo{
+    background-color: #ffffff !important;
+}
+.skin-blue .main-header .navbar .sidebar-toggle{
+    background-color: #ffffff !important;
+}
+.skin-blue .main-header .navbar .sidebar-toggle{
+    color: #18265D  !important;
+}
+.content-wrapper, .right-side{
+    background: #EBF1F6;
+    padding: 0px 23px;
+    min-height: 100vh;
+}
+.skin-blue .main-header .navbar .nav>li>a{
+    color: #18265D;
+}
+.skin-blue .sidebar-menu>li.active>a{
+    color: #18265D !important;
+    border-radius: 0px;
+    background-color: transparent;
+    border-bottom-color: #18265D;
+    text-align: left;
+    border-bottom: 0;
+    border-right-color: #18265D;
+    border-left: none;
+    border-right: 3px solid;
+}
+
+.skin-blue .sidebar-menu>li.active>a>span{
+        font-size: 14px; 
+        font-weight: bold;
+}
+
+
+
+.skin-blue .sidebar-menu>li.active>a>.nav-icons>.fa {
+    color: #18265D !important;
+}
+.btn .fa{
+    color: #fff !important;
+}
+.box-header>.fa, .box-header>.glyphicon, .box-header>.ion, .box-header .box-title{
+    font-weight: 800 !important;
+}
+.box.box-default{
+    padding: 25px 27px;
+}
+
+
+
+
+.box{
+    margin-bottom: 0px;
+}
+.skin-blue .sidebar-menu>li>.treeview-menu{
+    background: #ebeced;
+    padding-left: 16px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+.skin-blue .treeview-menu>li>a {
+    color: #18265D  !important;
+    font-size: 13px;
+    font-weight: 600;
+}
+.navbar-nav>.user-menu>.dropdown-menu>li.user-header>img{
+    border-radius: 50%;
+    box-shadow: 1px 1px 23px #cfd8e7;
+    padding: 13px;
+    margin: 12px;
+}
+.profile_change{
+    color: #3f4d67 !important;
+    text-decoration: none;
+    border-bottom: 0px;
+    font-weight: 500;
+}
+.btn-signput{
+    background-color: #18265D;
+    border: 0px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.skin-blue .main-header li.user-header{
+    background-color: #ebeced3d;
+}
+.navbar-nav>.user-menu>.dropdown-menu>.user-footer{
+    background-color: #ebeced3d;
+}
+.box-header>.fa, .box-header>.glyphicon, .box-header>.ion, .box-header .box-title{
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    font-size: 22px;
+}
+.sidebar-mini.sidebar-collapse .sidebar-menu>li:not(.treeview)>a>span{
+    display: inline-flex !important;
+}
+.table>thead>tr>th{
+    font-size: 13px;
+    text-transform: uppercase !important;
+}
+.table>tbody>tr>td{
+    font-size: 13px;
+    text-transform: capitalize;
+    font-weight: 600 !important;
+}
+thead {
+    background-color: #ebeceded !important;
+    border: 0px;
+    box-shadow: 0px 0px 0px #fff;
+}
+table img{
+    height: 45px;
+    border-radius: 4px
+}
+.sidebar-menu>li>a{
+    padding: 18px 6px 13px 8px;
+    display: block;
+}
+.Editor-container .fa{
+    color: #18265D !important;
+}
+.sidebar-mini.sidebar-collapse .sidebar-menu>li:hover>a>span:not(.pull-right), .sidebar-mini.sidebar-collapse .sidebar-menu>li:hover>.treeview-menu{
+    background-color: #000000;
+}
+.form-control{
+    font-weight: 500;
+}
+.sidebar-menu>li>a{
+    padding: 10px 6px 10px 8px; 
+}
+.alertify .ajs-body .ajs-content{
+    font-weight: 600;
+    color: #3f4e67;
+}
+.alertify.ajs-movable:not(.ajs-maximized) .ajs-header{
+    font-weight: 600;
+    color: #3f4e67;
+    font-size: 18px;
+}
+.alertify-notifier .ajs-message.ajs-success{
+    font-weight: 600;
+}
+.alertify-notifier .ajs-message.ajs-error{
+    font-weight: 600;
+}
