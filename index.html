@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Naan Mudhalvan Project: To Supply Leftover Food to Poor</title>
+    <style>
+        body {
+            font-family: EB Garamond, EB Garamond;
+            background: #e3cfe7;
+            margin: 0;
+            padding: 40px 0;
+        }
+        .container {
+            max-width: 700px;
+            background: #75b6ca;
+            margin: 40px auto;
+            padding: 38px 28px 24px 28px;
+            border: 2.5px solid #2e1a02;
+            border-radius: 8px;
+            min-height: 520px;
+            box-shadow: 0 4px 20px #090912;
+        }
+        h2 {
+            text-align: center;
+            color: #6b2e09;
+            margin-top: 0;
+            letter-spacing: 1px;
+            margin-bottom: 32px;
+        }
+        .info {
+            margin-bottom: 18px;
+        }
+        .info p {
+            font-size: 17px;
+            margin: 5px 0 7px 0;
+        }
+        .team-members {
+            font-size: 17px;
+            margin: 0 0 10px 0;
+        }
+        .team-list {
+            margin: 4px 0 5px 20px;
+            padding: 0;
+        }
+        .team-list li {
+            margin: 0;
+            padding: 0;
+            list-style-type: disc;
+            font-size: 16px;
+        }
+        .btn-row {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            margin: 30px 0 20px 0;
+        }
+        .btn {
+            border: 2px solid #0b0b10;
+            border-radius: 6px;
+            background: #ece9ff;
+            color: #0a090d;
+            font-size: 18px;
+            padding: 10px 34px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            min-width: 148px;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 6px #f5f5fa;
+        }
+        .btn.active, .btn:hover {
+            background: #b4b9d2;
+            color: #1b1563;
+        }
+        .embed-section {
+            margin-top: 6px;
+        }
+        .embed {
+            width: 100%;
+            border: 1.5px solid #24147e;
+            border-radius: 7px;
+            background: #f9f9ff;
+            box-shadow: 0 2px 8px #ececec;
+        }
+        .pdf-embed {
+            min-height: 450px;
+            height: 470px;
+            display: none;
+        }
+        .video-embed {
+            min-height: 320px;
+            height: 340px;
+            display: none;
+        }
+        @media (max-width: 770px) {
+            .container {
+                padding: 10px 2vw 12px 2vw;
+            }
+            .btn-row {
+                flex-direction: column;
+                gap: 14px;
+                align-items: center;
+            }
+        }
+    </style>
+    <script>
+        function showEmbed(type) {
+            const pdf = document.getElementById('pdf_embed');
+            const video = document.getElementById('video_embed');
+            const btnDoc = document.getElementById('btn_doc');
+            const btnVid = document.getElementById('btn_vid');
+            if (type === 'pdf') {
+                pdf.style.display = 'block';
+                video.style.display = 'none';
+                btnDoc.classList.add('active');
+                btnVid.classList.remove('active');
+            } else {
+                pdf.style.display = 'none';
+                video.style.display = 'block';
+                btnDoc.classList.remove('active');
+                btnVid.classList.add('active');
+            }
+        }
+        window.onload = function() {
+            showEmbed('pdf');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>NAAN MUDHALVAN PROJECT</h2>
+        <div class="info">
+            <p><strong>TEAM LEADER:</strong> Vaitheshwari V</p>
+            <div class="team-members">
+                <strong>TEAM MEMBERS:</strong>
+                <ul class="team-list">
+                    <li>Poovizhi C</li>
+                    <li>Rajalakshmi P</li>
+                    <li>Ragupathi S</li>
+                </ul>
+            </div>
+            <p><strong>EMAIL:</strong> vaithisesha@gmail.com</p>
+            <p><strong>COLLEGE:</strong> Government Arts and Science College , Sathyamangalam</p>
+            <p><strong>PROJECT:</strong> To Supply Leftover Food to Poor</p>
+        </div>
+        <div class="btn-row">
+            <button id="btn_doc" class="btn" onclick="showEmbed('pdf')">Documentation</button>
+            <button id="btn_vid" class="btn" onclick="showEmbed('video')">Demo Video</button>
+        </div>
+        <div class="embed-section">
+            <iframe
+                id="pdf_embed"
+                class="embed pdf-embed"
+                src="./To_Supply_Leftover_Food_To_Poor.pdf"
+                title="Documentation PDF">
+            </iframe>
+            <video
+                id="video_embed"
+                class="embed video-embed"
+                controls>
+                <source src="./Food_Connect_app.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+</body>
+</html>
